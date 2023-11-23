@@ -2,14 +2,6 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-variable "vpc_cidr_block" {}
-variable "subnet_cidr_block" {}
-variable "avail_zone" {}
-variable "env_prefix" {}
-variable "my_ip" {}
-variable "instance_type" {}
-variable "public_key_location" {}
-
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
@@ -198,12 +190,3 @@ resource "aws_instance" "myapp-server" {
 }
 
 
-//print AMI used
-output "aws_ami_id" {
-  value = data.aws_ami.latest-amazon-linux-image.id
-}
-
-//print IP after creating ec2
-output "ec2_public_ip" {
-  value = aws_instance.myapp-server.public_ip
-}
