@@ -163,15 +163,7 @@ data "aws_ami" "latest-amazon-linux-image" {
   }
 }
 
-//print AMI used
-output "aws_ami_id" {
-  value = data.aws_ami.latest-amazon-linux-image.id
-}
 
-//print IP after creating ec2
-output "ec2_public_ip" {
-  value = aws_instance.myapp-server.public_ip
-}
 
 //creating keypair file
 resource "aws_key_pair" "ssh-key" {
@@ -197,8 +189,21 @@ resource "aws_instance" "myapp-server" {
   //add keypair after creating it
   //if you use the id_rsa.pub, you will ssh by doing; ssh ec2-user@Ip.Addr.ess
   key_name = aws_key_pair.ssh-key.key_name
+  //below user data is not working so cant run the docker..
+  user_data = file("entry-script.sh")
 
   tags = {
     Name : "${var.env_prefix}-server"
   }
+}
+
+
+//print AMI used
+output "aws_ami_id" {
+  value = data.aws_ami.latest-amazon-linux-image.id
+}
+
+//print IP after creating ec2
+output "ec2_public_ip" {
+  value = aws_instance.myapp-server.public_ip
 }
