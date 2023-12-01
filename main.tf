@@ -9,6 +9,7 @@ variable "env_prefix" {}
 variable "my_ip" {}
 variable "instance_type" {}
 variable "public_key_location" {}
+variable "ssh_key_private" {}
 
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cidr_block
@@ -190,10 +191,17 @@ resource "aws_instance" "myapp-server" {
   //if you use the id_rsa.pub, you will ssh by doing; ssh ec2-user@Ip.Addr.ess
   key_name = aws_key_pair.ssh-key.key_name
   //below user data is not working so cant run the docker..
-  user_data = file("entry-script.sh")
+  //user_data = file("entry-script.sh")
 
   tags = {
     Name : "${var.env_prefix}-server"
+  }
+
+  #this provisioner executes are ansible playbook in terraform
+  provisioner "local-exec" {
+    #path to the docker playbook
+    working_dir = "/Users/brightadams/Desktop/projects/devops/techworld_nana2/ansible/playbooks/"
+    command     = "ansible-playbook --inventory ${self.public_ip}, --private-key ${var.ssh_key_private} --user ec2-user  deploy-project.yaml"
   }
 }
 

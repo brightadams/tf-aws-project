@@ -7,3 +7,5 @@
 
 #tf variables
 *.tfvars
+
+.DS_Store
